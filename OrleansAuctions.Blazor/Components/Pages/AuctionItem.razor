@@ -1,0 +1,10 @@
+@page "/auction/{AuctionId}"
+
+<PageTitle>Live auction</PageTitle>
+
+@if (Auction != null)
+{
+    <h3>@Auction.Title</h3>
+    <InputNumber @bind-Value="@BidPrice" class="form-control"></InputNumber>
+    <button class="btn btn-success" @onclick="(() => Bid())">Bid</button>
+}

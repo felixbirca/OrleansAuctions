@@ -1,0 +1,12 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+@if (auctions != null && auctions.Count > 0)
+{
+    @foreach (var x in auctions)
+    {
+        <a href="/auction/@x.AuctionId">@x.Title</a>
+    }
+}
+

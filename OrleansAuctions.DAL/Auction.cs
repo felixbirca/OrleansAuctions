@@ -10,10 +10,9 @@ public enum AuctionStatus
 
 public class Auction
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public string Category { get; set; }
-    public string Description { get; set; }
+    public Guid AuctionId { get; set; }
+    public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
     public decimal StartingPrice { get; set; }
     public DateTime StartTime { get; set; }
     public int Duration { get; set; }

@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OrleansAuctions.DAL;
 
 try
 {
@@ -20,14 +24,29 @@ catch (Exception ex)
 
 static async Task<IHost> StartSiloAsync()
 {
+    IConfigurationRoot configuration = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.Development.json", false, true)
+        .AddEnvironmentVariables()
+        .Build();
+    
+    string cosmosConnectionString = configuration["ConnectionStrings:COSMOS"] ?? string.Empty;
+
+    
     var builder = Host
         .CreateDefaultBuilder()
         .UseOrleans((context, silo) =>
         {
             silo
                 .UseLocalhostClustering()
-                .ConfigureLogging(logging => logging.AddConsole());
+                .ConfigureLogging(logging => logging.AddConsole())
+                .ConfigureServices(services =>
+                    {
+                        services.AddDbContextFactory<AuctionContext>(options => options.UseCosmos(cosmosConnectionString, "OrleansAuctions"));
+                    }
+                );
         });
+
 
     var host = builder.Build();
     await host.StartAsync();

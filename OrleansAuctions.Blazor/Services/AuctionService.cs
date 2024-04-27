@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using OrleansAuctions.Blazor.Infra;
-using OrleansAuctions.Blazor.Models;
+using OrleansAuctions.DAL;
 
 namespace OrleansAuctions.Blazor.Services;
 
@@ -46,7 +45,6 @@ public class AuctionService : IAuctionService
                 
             }
         }
-
         return auctions;
     }
 

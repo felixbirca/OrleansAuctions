@@ -13,6 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\OrleansAuctions.Abstractions\OrleansAuctions.Abstractions.csproj" />
+      <ProjectReference Include="..\OrleansAuctions.Blazor\OrleansAuctions.Blazor.csproj" />
       <ProjectReference Include="..\OrleansAuctions.DAL\OrleansAuctions.DAL.csproj" />
     </ItemGroup>
 

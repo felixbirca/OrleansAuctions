@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using OrleansAuctions.Blazor.Models;
 using OrleansAuctions.Blazor.Services;
+using OrleansAuctions.DAL;
 
 namespace OrleansAuctions.Blazor.Components.Pages;
 

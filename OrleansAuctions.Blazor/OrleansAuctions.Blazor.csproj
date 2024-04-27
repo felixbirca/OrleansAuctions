@@ -11,4 +11,13 @@
       <PackageReference Include="Microsoft.Orleans.Client" Version="8.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrleansAuctions.Abstractions\OrleansAuctions.Abstractions.csproj" />
+      <ProjectReference Include="..\OrleansAuctions.DAL\OrleansAuctions.DAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>

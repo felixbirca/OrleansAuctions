@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using OrleansAuctions.Blazor.Models;
 using OrleansAuctions.Blazor.Services;
+using OrleansAuctions.DAL;
 
 namespace OrleansAuctions.Blazor.Components.Pages;
 
@@ -8,6 +8,8 @@ public partial class AuctionItem
 {
     [Inject]
     private IAuctionService _auctionService { get; set; }
+    [Inject]
+    private IBiddingService _biddingService { get; set; }
     [Parameter]
     public string AuctionId { get; set; }
     [Inject] 
@@ -22,8 +24,15 @@ public partial class AuctionItem
         Logger.LogInformation("Bid Price set");
     }
 
-    private void Bid()
+    private async Task Bid()
     {
-        Logger.LogInformation(BidPrice.ToString());
+        try
+        {
+            await _biddingService.AddBidAsync(Guid.Parse(AuctionId), Guid.NewGuid(), BidPrice);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 }

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using OrleansAuctions.Blazor.Models;
 using OrleansAuctions.Blazor.Services;
+using OrleansAuctions.DAL;
 
 namespace OrleansAuctions.Blazor.Components.Pages;
 

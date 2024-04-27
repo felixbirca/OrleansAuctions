@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrleansAuctions.Blazor.Components;
-using OrleansAuctions.Blazor.Infra;
 using OrleansAuctions.Blazor.Services;
+using OrleansAuctions.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddDbContextFactory<AuctionContext>(options => options.UseCosmos(builder.Configuration.GetConnectionString("COSMOS"), "OrleansAuctions"));
 builder.Services.AddScoped<IAuctionService, AuctionService>();
+builder.Services.AddScoped<IBiddingService, BiddingService>();
 builder.Services.AddAntiforgery(options => { options.Cookie.Expiration = TimeSpan.Zero;});
 
 var app = builder.Build();

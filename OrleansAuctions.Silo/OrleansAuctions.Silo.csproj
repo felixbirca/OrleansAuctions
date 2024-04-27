@@ -10,15 +10,21 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.22.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.4" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.22.0" />
         <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="8.1.0" />
         <PackageReference Include="Microsoft.Orleans.GrainDirectory.AzureStorage" Version="8.1.0" />
         <PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="8.1.0" />
         <PackageReference Include="Microsoft.Orleans.Reminders.AzureStorage" Version="8.1.0" />
+        <PackageReference Include="Microsoft.Orleans.Sdk" Version="8.1.0" />
         <PackageReference Include="Microsoft.Orleans.Server" Version="8.1.0" />
         <PackageReference Include="Microsoft.Orleans.Streaming" Version="8.1.0" />
         <PackageReference Include="OrleansDashboard" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\OrleansAuctions.Grains\OrleansAuctions.Grains.csproj" />
     </ItemGroup>
     
 </Project>

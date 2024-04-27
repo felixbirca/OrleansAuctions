@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansAuctions.DAL", "Orle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansAuctions.Silo", "OrleansAuctions.Silo\OrleansAuctions.Silo.csproj", "{74F1B1AB-E083-41E6-B2BD-BBC3B0D40C7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansAuctions.Abstractions", "OrleansAuctions.Abstractions\OrleansAuctions.Abstractions.csproj", "{1619B8DE-61F5-47BA-A0E8-1C8A7E08DFFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{74F1B1AB-E083-41E6-B2BD-BBC3B0D40C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F1B1AB-E083-41E6-B2BD-BBC3B0D40C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F1B1AB-E083-41E6-B2BD-BBC3B0D40C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1619B8DE-61F5-47BA-A0E8-1C8A7E08DFFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1619B8DE-61F5-47BA-A0E8-1C8A7E08DFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1619B8DE-61F5-47BA-A0E8-1C8A7E08DFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1619B8DE-61F5-47BA-A0E8-1C8A7E08DFFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

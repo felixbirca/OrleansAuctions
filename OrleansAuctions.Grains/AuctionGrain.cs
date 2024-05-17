@@ -7,26 +7,56 @@ namespace OrleansAuctions.Grains;
 
 public class AuctionGrain : Grain, IAuctionGrain
 {
-    // private readonly IPersistentState<AuctionGrainState> _auction;
     private readonly ILogger<AuctionGrain> _logger;
     private readonly IDbContextFactory<AuctionContext> _dbContextFactory;
+    private readonly ISignalRClient _signalRClient;
     private AuctionContext _dbContext;
-
-    public AuctionGrain(
-        ILogger<AuctionGrain> logger, 
-        // [PersistentState(stateName:"Auctions", storageName:"OrleansAuctions")]
-        // IPersistentState<AuctionGrainState> auction, 
-        IDbContextFactory<AuctionContext> dbContextFactory
-        )
+    private AuctionGrainState _state;
+    
+    public AuctionGrain(ILogger<AuctionGrain> logger, IDbContextFactory<AuctionContext> dbContextFactory, ISignalRClient signalRClient)
     {
         _logger = logger;
         _dbContextFactory = dbContextFactory;
+        _signalRClient = signalRClient;
     }
 
     public override async Task OnActivateAsync(CancellationToken ct)
     {
         _dbContext = await _dbContextFactory.CreateDbContextAsync(ct);
         await _dbContext.Database.EnsureCreatedAsync(ct);
+
+        var grainId = this.GetPrimaryKey();
+        
+        var auction = await _dbContext.Auctions.FindAsync(grainId);
+
+        if (auction != null)
+        {
+            var winningBid = await _dbContext.Bids.Where(b => b.AuctionId == auction.AuctionId)
+                                                  .OrderByDescending(b => b.Amount)
+                                                  .FirstOrDefaultAsync(ct);
+            
+            _state = new AuctionGrainState
+            {
+                Id = auction.AuctionId,
+                AuctionStatus = auction.AuctionStatus,
+                Category = "",
+                Description = auction.Description,
+                WinningBidAmount = winningBid?.Amount ?? auction.StartingPrice,
+                Winner = winningBid?.UserId,
+                EndTime = auction.EndTime,
+                StartingPrice = auction.StartingPrice,
+                Title = auction.Title
+            };
+        }
+        
+        await _signalRClient.ConnectAsync();
+        
+        await base.OnActivateAsync(ct);
+    }
+
+    public async Task<AuctionGrainState> GetState()
+    {
+        return await Task.FromResult(_state);
     }
 
     public async Task PlaceBid(decimal bidAmount, Guid userId, Guid auctionId)
@@ -40,11 +70,24 @@ public class AuctionGrain : Grain, IAuctionGrain
             BidDateTime = DateTimeOffset.Now
         });
 
-        await _dbContext.SaveChangesAsync();
-    }
+        if (_state.WinningBidAmount < bidAmount)
+        {
+            _state.WinningBidAmount = bidAmount;
+            _state.Winner = userId;
 
-    // public Task<AuctionGrainState> GetAuctionDetails()
-    // {
-    //     // return Task.FromResult(_auction.State);
-    // }
+            var timeLeft = _state.EndTime - DateTime.Now;
+            if (timeLeft.Seconds < 10)
+            {
+                _state.EndTime += timeLeft + TimeSpan.FromSeconds(11 - timeLeft.Seconds);
+            }
+            
+            await _signalRClient.SendNewWinningBetMessage(auctionId.ToString(), bidAmount, userId.ToString());
+        }
+
+        var time = DateTimeOffset.Now;
+        await _dbContext.SaveChangesAsync();
+        var endTime = DateTimeOffset.Now;
+        
+        _logger.LogInformation($"Database write took {(endTime - time).Milliseconds} ms");
+    }
 }

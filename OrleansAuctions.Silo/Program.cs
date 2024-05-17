@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OrleansAuctions.Abstractions;
 using OrleansAuctions.DAL;
+using OrleansAuctions.Silo;
 
 try
 {
@@ -31,7 +33,7 @@ static async Task<IHost> StartSiloAsync()
         .Build();
     
     string cosmosConnectionString = configuration["ConnectionStrings:COSMOS"] ?? string.Empty;
-
+    string hubUrl = configuration["ConnectionStrings:HUB_URI"] ?? string.Empty;
     
     var builder = Host
         .CreateDefaultBuilder()
@@ -43,10 +45,10 @@ static async Task<IHost> StartSiloAsync()
                 .ConfigureServices(services =>
                     {
                         services.AddDbContextFactory<AuctionContext>(options => options.UseCosmos(cosmosConnectionString, "OrleansAuctions"));
+                        services.AddScoped<ISignalRClient>(s => new SignalRClient(hubUrl));
                     }
                 );
         });
-
 
     var host = builder.Build();
     await host.StartAsync();

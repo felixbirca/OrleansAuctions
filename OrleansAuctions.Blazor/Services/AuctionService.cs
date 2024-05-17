@@ -1,15 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using OrleansAuctions.DAL;
+using OrleansAuctions.Abstractions;
 
 namespace OrleansAuctions.Blazor.Services;
 
 public class AuctionService : IAuctionService
 {
     private readonly IDbContextFactory<AuctionContext> _dbContext;
+    private readonly IClusterClient _client;
 
-    public AuctionService(IDbContextFactory<AuctionContext> dbContext)
+    public AuctionService(IDbContextFactory<AuctionContext> dbContext, IClusterClient client)
     {
         _dbContext = dbContext;
+        _client = client;
     }
 
     public async Task CreateAuction(Auction auction)
@@ -38,7 +41,7 @@ public class AuctionService : IAuctionService
             try
             {
                 await context.Database.EnsureCreatedAsync();
-                auctions = await context.Auctions.OrderByDescending(x => x.StartTime).ToListAsync();
+                auctions = await context.Auctions.OrderByDescending(x => x.EndTime).ToListAsync();
             }
             catch (Exception e)
             {
@@ -48,22 +51,10 @@ public class AuctionService : IAuctionService
         return auctions;
     }
 
-    public async Task<Auction> GetAuction(string id)
+    public async Task<AuctionGrainState> GetAuction(Guid id)
     {
-        Auction auction = null; 
-        
-        await using var context = await _dbContext.CreateDbContextAsync();
-        {
-            try
-            {
-                await context.Database.EnsureCreatedAsync();
-                auction = await context.Auctions.Where(x => x.AuctionId == Guid.Parse(id)).FirstOrDefaultAsync();
-            }
-            catch (Exception e)
-            {
-                
-            }
-        }
+        var auctionGrain = _client.GetGrain<IAuctionGrain>(id);
+        var auction = await auctionGrain.GetState();
 
         return auction;
     }

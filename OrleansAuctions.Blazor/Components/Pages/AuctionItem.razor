@@ -5,6 +5,9 @@
 @if (Auction != null)
 {
     <h3>@Auction.Title</h3>
+    <p>Current price: @Auction.WinningBidAmount</p>
+    <p>Winner is user with id: @Auction.Winner</p>
+    <CountdownCircle EndTime="@Auction.EndTime" />
     <InputNumber @bind-Value="@BidPrice" class="form-control"></InputNumber>
     <button class="btn btn-success" @onclick="Bid">Bid</button>
 }

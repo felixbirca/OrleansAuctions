@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using OrleansAuctions.Blazor.Components;
+using OrleansAuctions.Blazor.Hubs;
 using OrleansAuctions.Blazor.Services;
 using OrleansAuctions.DAL;
 
@@ -16,8 +18,14 @@ builder.Host
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddDbContextFactory<AuctionContext>(options => options.UseCosmos(builder.Configuration.GetConnectionString("COSMOS"), "OrleansAuctions"));
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 builder.Services.AddScoped<IBiddingService, BiddingService>();
+builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddAntiforgery(options => { options.Cookie.Expiration = TimeSpan.Zero;});
 
 var app = builder.Build();
@@ -34,8 +42,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseResponseCompression();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+app.MapHub<AuctionHub>("/auctionhub");
 
 app.Run();

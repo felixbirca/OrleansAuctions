@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.Orleans.Serialization.Abstractions" Version="8.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrleansAuctions.DAL\OrleansAuctions.DAL.csproj" />
+    </ItemGroup>
+
 </Project>
